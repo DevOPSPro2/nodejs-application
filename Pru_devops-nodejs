@@ -1,0 +1,31 @@
+node{
+  stage('CodeCheckout'){
+    sh "echo running ebay nodeJS project" 
+    git 'https://github.com/DevOPSPro2/nodejs-application'
+  }
+  stage('UnitTest'){
+      //sh "echo tests successful"
+    //sh "npm test"
+  }
+  stage('Build'){
+     sh "echo creating build artifacts"
+     nodejs(nodeJSInstallationName: 'nodejs19'){
+    sh 'npm install'
+   }
+  }
+stage('UploadArtifacts'){
+    sh "echo npm packages uploaded"
+    nodejs(nodeJSInstallationName: 'nodejs19') {
+        //sh 'npm publish'
+        // Jenkins nexus intergration 
+        // password = admin1234  username = admin 
+        // echo -n 'admin:admin1234' | openssl base64
+    }
+  }
+stage('deployment'){
+    sh "echo Deploying applications"
+    nodejs(nodeJSInstallationName: 'nodejs19') {
+        sh 'npm start'
+    }
+  }
+}
